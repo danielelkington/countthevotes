@@ -1,0 +1,20 @@
+body {
+  padding-top: 65px;
+}
+
+.col-centered{
+  text-align: center;
+}
+
+.col-padded{
+  padding: 5px;
+}
+
+.validationError{
+  color: red;
+  font-size: 13px;
+}
+
+.noFloat{
+  float:none;
+}

@@ -1,0 +1,32 @@
+<div class="container">
+	<div class="row">
+		<h1>New Election</h1>
+	</div>
+
+	<form novalidate name="addElectionForm" ng-submit="addElectionForm.$valid && addElection()">
+		<div class="row">
+			<div class="col-md-6 col-padded">
+				<label for="electionName">Election Name:</label>
+				<input type="text" name="electionName" id="electionName" ng-model="electionName" ng-pattern="/^[^']*$/" required></input>
+				<br/>
+				<span class="validationError" ng-show="(addElectionForm.electionName.$touched || addElectionForm.$submitted) && addElectionForm.electionName.$error.required">A name for the election is required</span>
+				<span class="validationError" ng-show="addElectionForm.electionName.$error.pattern">Cannot use a single quote character</span>
+				<br/>
+
+				<label for="numberOfPositions">Number of positions:</label>
+				<input type="number" name="numberOfPositions" id="numberOfPositions" ng-model="numberOfPositions" ng-min="1" ng-pattern="/^[0-9]*$/" required></input>
+				<br/>
+				<span class="validationError" ng-show="(addElectionForm.numberOfPositions.$touched || addElectionForm.$submitted) && addElectionForm.numberOfPositions.$error.required">The number of positions to be filled is required</span>
+				<span class="validationError" ng-show="addElectionForm.numberOfPositions.$error.pattern || addElectionForm.numberOfPositions.$error.number || addElectionForm.numberOfPositions.$error.min">Must be a whole number that is at least 1</span>
+			</div>
+			<div class="col-md-6 col-padded">
+				<label>Candidate names (in ballot paper order):</label><br/>
+				<div ng-repeat="candidate in candidates">
+					<input type="text" ng-model="candidate.name" ng-blur="processCandidates()"></input>
+					<br/>
+				</div>
+			</div>
+		</div>
+		<button type="submit" class="btn btn-default">Next</button>
+	</form>
+</div>

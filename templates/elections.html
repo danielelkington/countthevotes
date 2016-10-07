@@ -1,0 +1,28 @@
+<div class="container">
+	<div class="row">
+		<h1>Elections</h1>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-centered col-padded">
+			<a href="#/add-election" class="btn btn-lg btn-primary" role="button">New Election</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-centered col-padded">
+			<button type="button" class="btn btn-xs btn-default">Load downloaded election</button>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="center-block col-sm-4 noFloat">
+			<div class="list-group">
+				<a ng-repeat="election in elections" ng-click="editElection(election)" class="list-group-item" ng-href="#/edit-election/{{election}}">
+					{{election}} 
+					<button class="btn btn-xs pull-right" ng-click="deleteElection(election)">
+						<span class="glyphicon glyphicon-trash"></span>
+					</button>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
