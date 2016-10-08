@@ -11,7 +11,7 @@ app.config(function ($routeProvider){
         controller: 'AddEditElectionController',
         templateUrl:"./templates/add-edit-election.html"
     })
-    .when("/edit-election/:electionName/ballot/:ballotNumber", {
+    .when("/edit-election/:electionName/ballots", {
         controller: 'BallotController',
         templateUrl:"./templates/ballot.html"
     });
@@ -35,9 +35,13 @@ app.controller('HomeController', function($scope, localStorageService){
 });
 
 app.controller('AddEditElectionController', function($scope, $routeParams, $location, localStorageService){ 
+    $scope.pageTitle = "New Election";
+    $scope.electionNameEditable = true;
     this.readyPage = function(){
         $scope.candidates = [{name : ""}, {name : ""}];
         if ($routeParams.electionName != null){
+            $scope.pageTitle = $routeParams.electionName;
+            $scope.electionNameEditable = false;
             //Fetch from local storage
             var election = localStorageService.get($routeParams.electionName);
             $scope.electionName = election.nameOfElection;
@@ -92,7 +96,7 @@ app.controller('AddEditElectionController', function($scope, $routeParams, $loca
         localStorageService.set(election.nameOfElection, election);
 
         //Navigate to first ballot.
-        $location.path('/edit-election/' + election.nameOfElection + '/' + 'ballot/1');
+        $location.path('/edit-election/' + election.nameOfElection + '/' + 'ballots');
     }
 
     this.readyPage();
@@ -100,47 +104,77 @@ app.controller('AddEditElectionController', function($scope, $routeParams, $loca
 
 app.controller("BallotController", function($scope, $routeParams, $location, localStorageService){
     var ballotController = this;
+    var election = {};
     this.readyPage = function(){
-        $scope.ballotNumber = $routeParams.ballotNumber;
-
         //Get the election
-        var election = localStorageService.get($routeParams.electionName);
-        var boxes = [];
-        //Determine whether or not this ballot has been entered yet.
-        if (election.ballots.length >= $scope.ballotNumber){
-            //Ballot has been entered! Load its details
-            var boxes = [];
-            for (var i = 0; i < election.candidates.length && i < election.ballots[$scope.ballotNumber - 1].length; i++){
-                boxes.push({candidateId: i, candidateName: election.candidates[i], vote: election.ballots[$scope.ballotNumber - 1][i]});
+        election = localStorageService.get($routeParams.electionName);
+        $scope.election = election;
+        $scope.electionName = election.nameOfElection;
+
+        //Get a list of processed ballots
+        var ballots = [];
+        for (var i = 0; i < election.ballots.length; i++){
+            ballots[i] = {ballotNumber: i+1, boxes: []};
+            for (var j = 0; j < election.candidates.length; j++){
+                ballots[i].boxes[j] = {candidateId: j, candidateName: election.candidates[j], vote: null};
+                if (election.ballots[i].length > j){
+                    ballots[i].boxes[j].vote = election.ballots[i][j];
+                }
             }
         }
-
-        //Fill in unentered candidates on the ballot paper.
-        for(var i = boxes.length; i < election.candidates.length; i++){
-            boxes.push({candidateId: i, candidateName: election.candidates[i], vote: null});
+        if (ballots.length == 0){
+            ballots.push({ballotNumber: 1, boxes:[]});
+            for (var j = 0; j < election.candidates.length; j++){
+                ballots[0].boxes[j] = {candidateId: j, candidateName: election.candidates[j], vote: null};
+            }
         }
-        $scope.boxes = boxes;
+        $scope.ballots = ballots;
+        $scope.selectedBallot = $scope.ballots[0];
     };
 
-    $scope.another = function(){
-        ballotController.saveBallot();
-        
-        //Go to next ballot paper
-        var nextBallotNumber = parseInt($scope.ballotNumber) + 1;
-        $location.path('/edit-election/' + $routeParams.electionName + '/' + 'ballot/' + nextBallotNumber);
-    }
+    $scope.selectBallot = function(ballot){
+        $scope.selectedBallot = ballot;
+        ballotController.saveElection();
+    };
 
-    this.saveBallot = function(){
-        //Process boxes
-        var boxes = [];
-        for (var i = 0; i < $scope.boxes.length; i++){
-            boxes[i] = $scope.boxes[i].vote;
+    $scope.nextBallot = function(){
+        var i = $scope.ballots.indexOf($scope.selectedBallot);
+        if ($scope.ballots.length == i+1){
+            $scope.ballots[i+1] = {ballotNumber: i+2, boxes:[]};
+            for (var j = 0; j < election.candidates.length; j++){
+                $scope.ballots[i+1].boxes[j] = {candidateId: j, candidateName: election.candidates[j], vote: null};
+            }
+        }
+        $scope.selectedBallot = $scope.ballots[i+1];
+        ballotController.saveElection();
+    };
+
+    $scope.removeBallot = function(ballot){
+        var i = $scope.ballots.indexOf(ballot);
+        $scope.ballots.splice(i, 1);
+        if ($scope.ballots.length == 0){
+            $scope.ballots.push({ballotNumber: 1, boxes:[]});
+            for (var j = 0; j < election.candidates.length; j++){
+                $scope.ballots[0].boxes[j] = {candidateId: j, candidateName: election.candidates[j], vote: null};
+            }
+        }
+        $scope.selectedBallot = $scope.ballots[0];
+        ballotController.saveElection();
+    };
+
+    this.saveElection = function(){
+        //Process ballots
+        var ballots = [];
+        for (var i = 0; i < $scope.ballots.length; i++){
+            ballots[i] = [];
+            for (var j = 0; j < $scope.ballots[i].boxes.length; j++){
+                ballots[i][j] = $scope.ballots[i].boxes[j].vote;
+            }
         }
         //Save storage
-        var election = localStorageService.get($routeParams.electionName);
-        election.ballots[$scope.ballotNumber - 1] = boxes;
+        election.ballots = ballots;
         localStorageService.set($routeParams.electionName, election);
-    }
+    };
 
     this.readyPage();
 });

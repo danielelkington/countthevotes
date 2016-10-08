@@ -1,9 +1,37 @@
 <div class="container">
 	<div class="row">
-		<h1>Ballot {{ballotNumber}}</h1>
+		<h1>{{electionName}} - Ballots</h1>
 	</div>
 
-	<form novalidate name="ballotForm">
+	<div class="row">
+		<!--Available ballots-->
+		<div class="col-sm-4">
+			<div class="list-group">
+				<a href="javascript:void(0)" ng-repeat="ballot in ballots" class="list-group-item" ng-class="{active: ballot == selectedBallot}" ng-click="selectBallot(ballot)">Ballot {{ballot.ballotNumber}}
+					<button class="btn btn-xs pull-right" ng-click="removeBallot(ballot)">
+						<span class="glyphicon glyphicon-trash"></span>
+					</button>
+				</a>
+			</div>
+		</div>
+
+		<!--Form for selected ballot-->
+		<div class="col-sm-8">
+			<form novalidate name="ballotForm" ng-submit="nextBallot()">
+				<div ng-repeat="box in selectedBallot.boxes">
+					<ng-form name="boxForm_{{box.candidateId}}">
+						<label>{{box.candidateName}}</label>
+						<input type="number" ng-model="box.vote" name="vote" required></input>
+						<span class="validationError" ng-show="boxForm_{{box.candidateId}}.vote.$touched && boxForm_{{box.candidateId}}.vote.$error.required">Please enter a value</span>
+						<br/>
+					</ng-form>
+				</div>
+				<button type="submit" class="btn btn-default">Next</button>		
+			</form>
+		</div>
+	</div>
+
+	<!-- <form novalidate name="ballotForm">
 		<div class="row">
 			<div class="col-md-6 col-padded">
 				<div ng-repeat="box in boxes">
@@ -11,7 +39,7 @@
 					<input type="number" ng-model="box.vote" required></input>
 					<br/>
 				</div>
-		<button type="submit" class="btn btn-default" ng-click="another()">Another</button>
+		
 		<button type="submit" class="btn btn-default">Count the votes!</button>
-	</form>
+	</form> -->
 </div>

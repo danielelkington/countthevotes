@@ -1,17 +1,19 @@
 <div class="container">
 	<div class="row">
-		<h1>New Election</h1>
+		<h1>{{pageTitle}}</h1>
 	</div>
 
 	<form novalidate name="addElectionForm" ng-submit="addElectionForm.$valid && addElection()">
 		<div class="row">
 			<div class="col-md-6 col-padded">
-				<label for="electionName">Election Name:</label>
-				<input type="text" name="electionName" id="electionName" ng-model="electionName" ng-pattern="/^[^']*$/" required></input>
-				<br/>
-				<span class="validationError" ng-show="(addElectionForm.electionName.$touched || addElectionForm.$submitted) && addElectionForm.electionName.$error.required">A name for the election is required</span>
-				<span class="validationError" ng-show="addElectionForm.electionName.$error.pattern">Cannot use a single quote character</span>
-				<br/>
+				<div ng-if="electionNameEditable">
+					<label for="electionName">Election Name:</label>
+					<input type="text" name="electionName" id="electionName" ng-model="electionName" ng-pattern="/^[^']*$/" required></input>
+					<br/>
+					<span class="validationError" ng-show="(addElectionForm.electionName.$touched || addElectionForm.$submitted) && addElectionForm.electionName.$error.required">A name for the election is required</span>
+					<span class="validationError" ng-show="addElectionForm.electionName.$error.pattern">Cannot use a single quote character</span>
+					<br/>
+				</div>
 
 				<label for="numberOfPositions">Number of positions:</label>
 				<input type="number" name="numberOfPositions" id="numberOfPositions" ng-model="numberOfPositions" ng-min="1" ng-pattern="/^[0-9]*$/" required></input>
