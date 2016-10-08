@@ -6,7 +6,7 @@
 	<form novalidate name="addElectionForm" ng-submit="addElectionForm.$valid && addElection()">
 		<div class="row">
 			<div class="col-md-6 col-padded">
-				<div ng-if="electionNameEditable">
+				<div ng-show="electionNameEditable">
 					<label for="electionName">Election Name:</label>
 					<input type="text" name="electionName" id="electionName" ng-model="electionName" ng-pattern="/^[^']*$/" required></input>
 					<br/>
