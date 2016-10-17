@@ -18,3 +18,8 @@ body {
 .noFloat{
   float:none;
 }
+
+.errorInList{
+	float:right;
+	margin-right: 15px;
+}

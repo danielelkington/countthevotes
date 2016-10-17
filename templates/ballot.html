@@ -11,6 +11,7 @@
 					<button class="btn btn-xs pull-right" ng-click="removeBallot(ballot)">
 						<span class="glyphicon glyphicon-trash"></span>
 					</button>
+					<span class="validationError errorInList" ng-show="!ballot.formal">Informal</span>
 				</a>
 			</div>
 		</div>

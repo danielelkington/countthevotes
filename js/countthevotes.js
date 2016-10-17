@@ -130,14 +130,17 @@ app.controller("BallotController", function($scope, $routeParams, $location, loc
         }
         $scope.ballots = ballots;
         $scope.selectedBallot = $scope.ballots[0];
+        ballotController.validateAllBallots();
     };
 
     $scope.selectBallot = function(ballot){
+        ballotController.validateBallot($scope.selectedBallot);
         $scope.selectedBallot = ballot;
         ballotController.saveElection();
     };
 
     $scope.nextBallot = function(){
+        ballotController.validateBallot($scope.selectedBallot);
         var i = $scope.ballots.indexOf($scope.selectedBallot);
         if ($scope.ballots.length == i+1){
             $scope.ballots[i+1] = {ballotNumber: i+2, boxes:[]};
@@ -174,6 +177,35 @@ app.controller("BallotController", function($scope, $routeParams, $location, loc
         //Save storage
         election.ballots = ballots;
         localStorageService.set($routeParams.electionName, election);
+    };
+
+    this.validateAllBallots = function(){
+        for (var i = 0; i < $scope.ballots.length; i++){
+            ballotController.validateBallot($scope.ballots[i]);
+        }
+    };
+
+    //Update the 'formal' and 'errorMessage' properties on a ballot.
+    this.validateBallot = function(ballot){
+        if (ballot == null)
+            return;
+        var lastCandidateNumber = election.candidates.length;
+        for (var number = 1; number < lastCandidateNumber; number++){
+            var foundNumber = false;
+            for (var i = 0; i < ballot.boxes.length; i++){
+                if (ballot.boxes[i].vote == number){
+                    foundNumber = true;
+                    break;
+                }
+            }
+            if (!foundNumber){
+                ballot.formal = false;
+                ballot.errorMessage = "Missing the number " + number;
+                return;
+            }
+        }
+        ballot.formal = true;
+        ballot.errorMessage = null;
     };
 
     this.readyPage();
