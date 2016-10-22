@@ -447,7 +447,7 @@ app.controller("ResultsController", function($scope, $routeParams, localStorageS
         }
         candidates.sort(function(a, b){
             if (a.voteValue > b.voteValue) return -1;
-            if (b.voteValue < a.voteValue) return 1;
+            if (a.voteValue < b.voteValue) return 1;
             return 0;
         });
     };
