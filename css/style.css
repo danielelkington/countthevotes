@@ -23,3 +23,15 @@ body {
 	float:right;
 	margin-right: 15px;
 }
+
+.candidateLabel{
+	margin-bottom: 2px;
+}
+
+.votingBox{
+	margin:2px 8px;
+}
+
+.margined-top{
+	margin-top:5px;
+}

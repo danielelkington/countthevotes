@@ -14,33 +14,24 @@
 					<span class="validationError errorInList" ng-show="!ballot.formal">Informal</span>
 				</a>
 			</div>
+			<button class="btn btn-default" ng-click="add()">Add</button>
 		</div>
 
 		<!--Form for selected ballot-->
 		<div class="col-sm-8">
 			<form novalidate name="ballotForm" ng-submit="nextBallot()">
-				<div ng-repeat="box in selectedBallot.boxes">
-					<ng-form name="boxForm_{{box.candidateId}}">
-						<label>{{box.candidateName}}</label>
-						<input type="number" ng-model="box.vote" name="vote" required></input>
-						<span class="validationError" ng-show="boxForm_{{box.candidateId}}.vote.$touched && boxForm_{{box.candidateId}}.vote.$error.required">Please enter a value</span>
-						<br/>
-					</ng-form>
-				</div>
-				<button type="submit" class="btn btn-default">Next</button>		
+				<table>
+					<tr ng-repeat="box in selectedBallot.boxes">
+						<ng-form name="boxForm_{{box.candidateId}}">
+							<td><label class="candidateLabel">{{box.candidateName}}</label></td>
+							<td><input class="votingBox" type="number" ng-model="box.vote" name="vote" required></input></td>
+						</ng-form>
+					</tr>
+				</table>
+				<button type="submit" class="btn btn-default margined-top">Next</button>
+				<br/>
 			</form>
+			<a class="btn btn-primary margined-top" ng-click="countTheVotes()" role="button">Count the votes!</a>
 		</div>
 	</div>
-
-	<!-- <form novalidate name="ballotForm">
-		<div class="row">
-			<div class="col-md-6 col-padded">
-				<div ng-repeat="box in boxes">
-					<label>{{box.candidateName}}</label>
-					<input type="number" ng-model="box.vote" required></input>
-					<br/>
-				</div>
-		
-		<button type="submit" class="btn btn-default">Count the votes!</button>
-	</form> -->
 </div>

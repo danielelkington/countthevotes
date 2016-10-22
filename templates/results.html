@@ -1,0 +1,43 @@
+<div class="container">
+	<div class="row">
+		<h1>{{electionName}} - Results</h1>
+	</div>
+
+	<div class="row">
+		<p>Positions: {{results.positions}}</p>
+		<p>Ballots: {{results.numberOfBallots}}</p>
+		<p>Informal Ballots: {{results.informalBallots}}</p>
+		<p>Formal Ballots: {{results.formalBallots}}</p>
+		<p>Quota: {{results.quota}}</p>
+
+		<div ng-repeat="count in results.counts">
+			<h2>Count {{$index}}</h2>
+			<p>{{count.description}}</p>
+
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Candidate</th>
+						<th>Votes</th>
+						<th>% of Quota</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="candidate in count.candidatesInRunning">
+						<td>{{candidate.name}}</td>
+						<td>{{candidate.voteValue | number:2}}</td>
+						<td>{{(candidate.percentOfQuota) | number: 2}}%</td>
+					</tr>
+				</tbody>
+			</table>
+			<hr/>
+		</div>
+
+		<h2>Candidates elected (in order):</h2>
+		<span ng-repeat="candidate in results.electedCandidates">
+			<strong>{{candidate.name}}</strong>
+			<br/>
+		</span>
+		<br/>
+	</div>
+</div>
