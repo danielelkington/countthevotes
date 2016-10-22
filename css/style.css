@@ -35,3 +35,11 @@ body {
 .margined-top{
 	margin-top:5px;
 }
+
+.wide-input{
+	width: 80%;
+}
+
+.no-padding{
+	padding:0px;
+}

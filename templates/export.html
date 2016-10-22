@@ -1,0 +1,13 @@
+<div class="container">
+	<div class="row">
+		<h1>{{electionName}} - Export</h1>
+	</div>
+
+	<div class="row">
+		<p>Copy this text to back-up this election. Paste it into the import screen on any device to restore it.</p>
+
+		<div class="column col-centered">
+			<textarea class="wide-input" rows="5" select-on-click readonly>{{election | json:0}}</textarea>
+		</div>
+	</div>
+</div>

@@ -19,6 +19,14 @@ app.config(function ($routeProvider){
         controller: 'ResultsController',
         templateUrl: "./templates/results.html"
     })
+    .when("/export/:electionName", {
+        controller: 'ExportController',
+        templateUrl: "./templates/export.html"
+    })
+    .when("/import", {
+        controller: 'ImportController',
+        templateUrl: "./templates/import.html"
+    })
     .when("/how-this-works", {
         templateUrl: "./templates/howthisworks.html"
     });
@@ -256,7 +264,7 @@ app.controller("ResultsController", function($scope, $routeParams, localStorageS
         var counts = [resultsController.getInitialCount(initialCandidates, formalBallots, quota)];
         while(counts[counts.length - 1].candidatesInRunning.length > 0 && 
             counts[counts.length - 1].electedCandidates.length < election.numberOfPositions){
-            counts.push(resultsController.generateNextCount(counts[counts.length-1], quota));
+            counts.push(resultsController.generateNextCount(counts[counts.length-1], quota, election.numberOfPositions));
         }
 
         return {positions: election.numberOfPositions,
@@ -337,7 +345,7 @@ app.controller("ResultsController", function($scope, $routeParams, localStorageS
         return count;
     };
 
-    this.generateNextCount = function(previousCount, quota){
+    this.generateNextCount = function(previousCount, quota, numberOfPositions){
         //Start with the previous count
         var count = angular.copy(previousCount);
         //Does the top candidate have a quota?
@@ -360,6 +368,30 @@ app.controller("ResultsController", function($scope, $routeParams, localStorageS
             resultsController.distributeBallots(surplusBallots, count.candidatesInRunning);
             resultsController.calculateCandidatePercentageOfQuota(count.candidatesInRunning, quota);
 
+            return count;
+        }
+
+        if (count.candidatesInRunning.length <= (numberOfPositions - count.electedCandidates.length)){
+            //All candidates remaining get elected!
+            count.description = "Elected only remaining candidate";
+            if (count.candidatesInRunning.length > 1){
+                count.description += "s";
+            }
+            count.description += " ";
+            while (count.candidatesInRunning.length > 0){
+                var electedCandidate = count.candidatesInRunning[0];
+                count.candidatesInRunning.splice(0,1);
+                electedCandidate.ballots = [];
+                count.electedCandidates.push(electedCandidate);
+                count.description += electedCandidate.name;
+                if (count.candidatesInRunning.length > 1){
+                    count.description += ", ";
+                }
+                if (count.candidatesInRunning.length == 1){
+                    count.description += " and ";
+                }
+            }
+            count.description += " as the number of remaining candidates was less than or equal to the number of positions.";
             return count;
         }
 
@@ -428,3 +460,48 @@ app.controller("ResultsController", function($scope, $routeParams, localStorageS
 
     this.readyPage();
 });
+
+app.controller("ExportController", function($scope, $routeParams, localStorageService){
+    $scope.election = localStorageService.get($routeParams.electionName);
+    $scope.electionName = $scope.election.nameOfElection;
+});
+
+app.controller("ImportController", function($scope, localStorageService){
+    $scope.electionJson = null;
+    $scope.error = false;
+    $scope.importComplete = false;
+    
+    $scope.importElection = function(){
+        var election = null;
+        try{
+            election = JSON.parse($scope.electionJson);
+        }
+        catch(exp){
+            $scope.error = true;
+            $scope.importComplete = false;
+            return;
+        };
+        if (election == null || election.nameOfElection == null){
+            $scope.error = true;
+            $scope.importComplete = false;
+            return;
+        }
+
+        localStorageService.set(election.nameOfElection, election);
+        $scope.error = false;
+        $scope.importComplete = true;
+    };
+});
+
+app.directive('selectOnClick', ['$window', function($window){
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs){
+            element.on('click', function(){
+                if (!window.getSelection().toString()){
+                    this.setSelectionRange(0, this.value.length)
+                }
+            });
+        }
+    };
+}]);

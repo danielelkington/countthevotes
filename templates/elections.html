@@ -9,7 +9,7 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-12 col-centered col-padded">
-			<button type="button" class="btn btn-xs btn-default">Load downloaded election</button>
+			<a type="button" class="btn btn-xs btn-default" href="#/import">Import Election</a>
 		</div>
 	</div>
 
@@ -17,11 +17,12 @@
 		<div class="center-block col-sm-4 noFloat">
 			<div class="list-group">
 				<div ng-repeat="election in elections" class="list-group-item">
-					<a ng-click="editElection(election)" ng-href="#/edit-election/{{election}}">
+					<a ng-href="#/edit-election/{{election}}">
 					{{election}}</a>
 					<button class="btn btn-xs pull-right" ng-click="deleteElection(election)">
 						<span class="glyphicon glyphicon-trash"></span>
 					</button>
+					<a class="btn btn-xs pull-right" ng-href="#/export/{{election}}">Export</a>
 				</div>
 			</div>
 		</div>

@@ -1,0 +1,18 @@
+<div class="container">
+	<div class="row">
+		<h1>Import election</h1>
+	</div>
+
+	<div class="row">
+		<p>Paste text from a previously exported election into this box and click "Import". Please note that if you have an election with the same name it will be overwritten.</p>
+
+		<div class="column col-centered">
+			<textarea class="wide-input" rows="5" select-on-click ng-model="electionJson"></textarea>
+			<br/>
+			<span class="validationError" ng-show="error">Data is not valid - please try again.</span>
+			<br/>
+			<button class="btn btn-primary" ng-click="importElection()">Import</button>
+			<p ng-show="importComplete">Import complete!</p>
+		</div>
+	</div>
+</div>

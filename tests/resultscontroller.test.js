@@ -326,7 +326,7 @@ describe('result', function(){
                 description: 'Initial Count'
             };
 
-            var nextCount = controller.generateNextCount(previousCount, 4.0);
+            var nextCount = controller.generateNextCount(previousCount, 4.0, 2);
 
             //Previous count should be unaffected
             expect(previousCount.candidatesInRunning.length).toBe(4);
@@ -395,7 +395,7 @@ describe('result', function(){
                 description: 'Initial Count'
             };
 
-            var nextCount = controller.generateNextCount(previousCount, 4.0);
+            var nextCount = controller.generateNextCount(previousCount, 4.0, 2);
 
             //Previous count should be unaffected
             expect(previousCount.candidatesInRunning.length).toBe(4);
