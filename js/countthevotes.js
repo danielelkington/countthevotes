@@ -209,7 +209,7 @@ app.controller("BallotController", function($scope, $routeParams, $location, loc
         if (ballot == null)
             return;
         var lastCandidateNumber = election.candidates.length;
-        for (var number = 1; number < lastCandidateNumber; number++){
+        for (var number = 1; number <= lastCandidateNumber; number++){
             var foundNumber = false;
             for (var i = 0; i < ballot.boxes.length; i++){
                 if (ballot.boxes[i].vote == number){
